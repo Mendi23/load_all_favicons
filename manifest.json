@@ -1,0 +1,16 @@
+{
+    "manifest_version": 2,
+    "name": "Load Bookmarks Favicon",
+    "version": "1.0",
+    "description": "briefly loads all bookmarks to fetch favicons",
+  
+    "permissions": [
+      "bookmarks",
+      "tabs"
+    ],
+
+    "background": {
+      "scripts": ["background.js"]
+    }
+  
+  }

@@ -1,5 +1,6 @@
 var current_tab = -1;
-var urls = []
+var urls = [];
+var current_timeout = null;
 
 const filter = {
     properties: ["status"]
@@ -22,7 +23,7 @@ function setItems(bookmarkItem) {
 }
 
 function openItem() {
-    if (urls.length > 350) {
+    if (urls.length > 0) {
         url = urls.pop();
         browser.tabs.create({ url: url, active: false }).then(onCreated, onError);
     }
@@ -34,11 +35,13 @@ function openItem() {
 function onCreated(tab) {
     console.log(`Created new tab: ${tab.id}`)
     current_tab = tab.id;
+    current_timeout = setTimeout(removeTab, 5000, tab.id);
 }
 
 function onComplete() {
     console.log(`Discarded tab: ` + current_tab);
     current_tab = -1;
+    clearTimeout(current_timeout);
     openItem();
 }
 
@@ -48,9 +51,13 @@ function onAccepted(bookmarkItems) {
     openItem();
 }
 
+function removeTab(tabId) {
+    browser.tabs.remove(tabId).then(onComplete, onError);
+}
+
 function updateListener(tabId, changeInfo, tab) {
     if (tabId == current_tab && tab.status == "complete") {
-        browser.tabs.remove(tabId).then(onComplete, onError);
+        removeTab(tabId);
     }
 }
 

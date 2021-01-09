@@ -55,8 +55,9 @@ function removeTab(tabId) {
     browser.tabs.remove(tabId).then(onComplete, onError);
 }
 
-function updateListener(tabId, changeInfo, tab) {
+async function updateListener(tabId, changeInfo, tab) {
     if (tabId == current_tab && tab.status == "complete") {
+        await new Promise(r => setTimeout(r, 1000));
         removeTab(tabId);
     }
 }
